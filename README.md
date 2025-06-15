@@ -214,42 +214,8 @@ python get_embedding.py \
 
 
 ## 6. Usage of Downstream Models Inference
-The <a href='http://47.93.21.181/lucavirus/DownstreamTasksTrainedModels/'> FTP</a> includes the trained models of 10 downstream tasks(presented in the paper, all metrics in `TableS5`), all these trained models are based on LucaVirus's embedding.        
-Use the script `src/predict.py` or `src/predict.sh` to load the trained model and predict.
-
-**Notice**    
-The project will download automatically Trained-CheckPoint of all downstream tasks from **FTP**.
-
-When downloading automatically failed, you can manually download:
-
-Copy the **DownstreamTasksTrainedModels Files(`models/` + `logs/`)** from <href> http://47.93.21.181/lucavirus/DownstreamTasksTrainedModels/ </href> into the project `LucaVirusTasks/`
 
 
-The shell script of all downstream task models for inference in `LucaVirusTasks/src/predict.sh`
-
-```shell 
-cd LucaVirusTasks/src/
-# input file format(csv, the first row is csv-header), Required columns: seq_id_a, seq_id_b, seq_type_a, seq_type_b, seq_a, seq_b
-# seq_type_a must be gene, seq_type_a must be prot
-export CUDA_VISIBLE_DEVICES="0,1,2,3"
-python predict.py \
-    --input_file ../test/CentralDogma/CentralDogma_prediction.csv \
-    --llm_truncation_seq_length 4096 \
-    --model_path .. \
-    --save_path ../predicts/CentralDogma/CentralDogma_prediction_results.csv \
-    --dataset_name CentralDogma \
-    --dataset_type gene_protein \
-    --task_type binary_class \
-    --task_level_type seq_level \
-    --model_type lucappi2 \
-    --input_type matrix \
-    --input_mode pair \
-    --time_str 20240406173806 \
-    --print_per_num 1000 \
-    --step 64000 \
-    --threshold 0.5 \
-    --gpu_id 0
-```
 
 ## 7. Downstream Tasks        
 The running scripts of 10 downstream tasks in three directories:      
@@ -272,7 +238,8 @@ The running scripts of 10 downstream tasks in three directories:
 <a href="https://scholar.google.com.hk/citations?user=RDbqGTcAAAAJ&hl=en" title="Yong He">Yong He</a>,    
 <a href="https://scholar.google.com.hk/citations?hl=zh-CN&pli=1&user=Zhlg9QkAAAAJ" title="Yuan-Fei Pan">Yuan-Fei Pan</a>,     
 <a href="https://scholar.google.com/citations?user=lT3nelQAAAAJ&hl=en" title="Zhaorong Li">Zhaorong Li</a>,      
-<a href="https://scholar.google.com/citations?user=1KJOH7YAAAAJ&hl=zh-CN&oi=ao" title="Mang Shi">Mang Shi</a>     
+<a href="https://scholar.google.com/citations?user=1KJOH7YAAAAJ&hl=zh-CN&oi=ao" title="Mang Shi">Mang Shi</a>,     
+Yuqi Liu
 
 
 ## 10. Citation          
