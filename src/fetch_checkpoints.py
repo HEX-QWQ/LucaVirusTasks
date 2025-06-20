@@ -50,7 +50,7 @@ def read_model_manifest(csv_file_path):
 def main():
     # Download LucaOne and LucaVirus pretrained models
     download_trained_checkpoint_lucaone(
-        llm_dir="../",
+        llm_dir="../llm",
         llm_type="lucaone",
         llm_version="v2.0",
         llm_task_level="token_level,span_level,seq_level,structure_level",
@@ -60,7 +60,7 @@ def main():
     )
 
     download_trained_checkpoint_lucavirus(
-        llm_dir="../",
+        llm_dir="../llm",
         llm_type="lucavirus",
         llm_version="v1.0",
         llm_task_level="token_level,span_level,seq_level",

@@ -1020,6 +1020,11 @@ def run(
     model_args.step = step
     model_args.gpu_id = gpu_id
 
+    # hot fix:
+    if model_args.llm_type == "lucaone_virus":
+        model_args.llm_type = "lucavirus"
+        model_args.llm_dirpath = model_args.llm_dirpath.replace("lucaone_virus", "lucavirus")
+
     if not hasattr(model_args, "embedding_complete"):
         model_args.embedding_complete = False
     if not hasattr(model_args, "embedding_complete_seg_overlap"):
@@ -1322,14 +1327,14 @@ if __name__ == "__main__":
     # download LLM(LucaOne)
     if not hasattr(run_args, "llm_step"):
         run_args.llm_step = "3800000"
-    download_trained_checkpoint_lucavirus(
-        llm_dir=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "llm/"),
-        llm_step=run_args.llm_step
-    )
+    # download_trained_checkpoint_lucavirus(
+    #     llm_dir=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "llm/"),
+    #     llm_step=run_args.llm_step
+    # )
     # download trained downstream task models
-    download_trained_checkpoint_downstream_tasks(
-        save_dir=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    )
+    # download_trained_checkpoint_downstream_tasks(
+    #     save_dir=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # )
     if run_args.input_file is not None and os.path.exists(run_args.input_file):
         exists_ids = set()
         exists_res = []
