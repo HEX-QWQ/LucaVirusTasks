@@ -26,10 +26,11 @@ conda create -n lucavirus_tasks python=3.9.13
 conda activate lucavirus_tasks
 pip install -r requirements.txt
 
-# 3. Run inference example
+# 3. Fetch all checkpoints for both foundation models and downstream tasks
 cd src
+python fetch_checkpoints.py
 
-# ensure the RdRP dataset has been placed in <project_root>/dataset folder before running
+# 3. Run inference example
 python predict.py \
     --input_file ../dataset/RdRP/protein/binary_class/test/test.csv \
     --seq_type prot \
@@ -91,12 +92,12 @@ pip install -r requirements.txt
 Place foundation model weights and logs in `<project_root>/llm/` folder.
 
 ### Downstream Models
-- Trained model checkpoints available at: `XXXX` (URL TBD)
+- Trained model checkpoints available at: `http://47.93.21.181/lucavirus/DownstreamTasksTrainedModels/` and in Zenodo (coming soon). All available checkpoints will be downloaded automatically when running the src/predict.py script, about 2.6Gb in total. If automatic downloading failed, users may download manually from the above URL.
 - Model manifest: `model_manifest/*.csv`
 - Performance metrics and configuration details included in manifest files
 
 ### Datasets
-- Training datasets available at: `XXXX` (URL TBD)
+- Training datasets available at: `http://47.93.21.181/lucavirus/DownstreamTasksDatasets/` and in Zenodo (coming soon).
 - Pretraining datasets: Refer to [LucaVirus repository](https://github.com/LucaOne/LucaVirus)
 
 ## 💻 Usage

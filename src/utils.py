@@ -1021,7 +1021,7 @@ def download_trained_checkpoint_lucavirus(
         llm_task_level="token_level,span_level,seq_level",
         llm_time_str="20240815023346",
         llm_step="3800000",
-        base_url="http://47.93.21.181/lucaone/lucavirus/TrainedCheckPoint/"
+        base_url="http://47.93.21.181/lucavirus/TrainedCheckPoint/"
 ):
     try:
         logs_file_names = ["logs.txt"]
@@ -1081,13 +1081,13 @@ def download_trained_checkpoint_lucavirus(
 
 def download_trained_checkpoint_downstream_tasks(
         save_dir="../",
-        dataset_name=["PPC_uniprot"],
+        dataset_name=["RdRP"],
         dataset_type=["protein"],
         task_type=["binary_class"],
         model_type=["luca_base"],
         input_type=["matrix"],
-        time_str=["20241203132555"],
-        step=[2474580],
+        time_str=["20250329135221"],
+        step=[83496],
         base_url="http://47.93.21.181/lucavirus/DownstreamTasksTrainedModels"
 ):
     """
