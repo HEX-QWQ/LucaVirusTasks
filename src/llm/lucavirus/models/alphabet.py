@@ -111,6 +111,9 @@ class Alphabet(object):
     @classmethod
     def from_pretrained(cls, dir_path):
         import os, pickle
+        
+        # hot fix
+        sys.path.append("llm/lucavirus")
         return pickle.load(open(os.path.join(dir_path, "alphabet.pkl"), "rb"))
 
     def save_pretrained(self, save_dir):

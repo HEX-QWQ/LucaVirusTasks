@@ -101,6 +101,8 @@ def load_model(
                 except Exception as e:
                     args_info = json.loads(line.strip())
                 break
+    if args_info["model_type"] == "lucaone_virus":
+        args_info["model_type"] = "lucavirus"
     print("------LLM Model Info ------")
     model_dirpath = os.path.abspath(model_dirpath)
     print("Model dirpath: %s" % model_dirpath)
