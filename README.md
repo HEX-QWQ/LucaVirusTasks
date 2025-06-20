@@ -149,11 +149,21 @@ python get_embedding.py \
 
 #### Performance Tips
 
-1. **GPU Memory**: Use A100/H100/H200 for large sequences (up to 4096 tokens)
-2. **Long Sequences**: Enable `--embedding_complete` and `--embedding_complete_seg_overlap`
-3. **DNA Sequences**: Set `--embedding_fixed_len_a_time` (e.g., 4096 for A100)
-4. **Protein Sequences**: Usually don't need fixed length setting
-5. **CPU Fallback**: Use `--gpu_id -1` for CPU inference
+1. Prioritize using GPUs with large memory (e.g., A100, H100, H200) for embedding inference. This allows processing longer sequences at once. LucaVirus can process sequences of approximately 2800 length on an A100 GPU.
+
+2. For extremely long sequences, LucaVirus performs overlapping segmentation for embedding and then merges them into a complete embedding. Please set both --embedding_complete and --embedding_complete_seg_overlap.
+
+3. If your GPU lacks sufficient memory to process the input sequence length, the CPU will be used, which will slow down the process. If your dataset does not contain many long sequences, you can use this method by setting --gpu_id -1.
+
+4. If your dataset contains many long sequences (e.g., over tens of thousands), in addition to setting --embedding_complete and --embedding_complete_seg_overlap, also set --embedding_fixed_len_a_time. This parameter indicates the maximum length for a single embedding operation. If a sequence length exceeds this value, it will be segmented based on this length and then merged. Otherwise, it will be processed based on its actual length.
+
+5. If --embedding_complete is not set, the sequence will be truncated for embedding according to the value set for --truncation_seq_length.
+
+6. For proteins, since most protein lengths are under 1000, there won't be many extremely long protein sequences. Therefore, --embedding_fixed_len_a_time can be set to a longer value or left unset.
+
+7. For DNA, since many tasks involve very long DNA sequences, please set --embedding_fixed_len_a_time. If the amount of extremely long sequence data is larger, set this value smaller (e.g., 4096 on an A100). Otherwise, set it larger. If the GPU fails to embed based on this length, the CPU will be used. If the dataset size is not large, the processing time will not be long.
+
+8. For RNA, since most RNA sequences are not very long, the processing method is consistent with proteins. Therefore, --embedding_fixed_len_a_time can be set to a longer value or left unset.
 
 ### Model Inference
 
