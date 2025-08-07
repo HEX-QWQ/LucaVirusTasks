@@ -55,6 +55,7 @@ def complete_embedding_matrix(
         fp16=False
 ):
     if init_emb is not None and embedding_complete and ("representations" in embedding_type or "matrix" in embedding_type):
+        torch.cuda.empty_cache()
         ori_seq_len = min(len(seq), MAX_SEQ_LEN)
         # 每次能处理这么长度
         # print("init_emb:", init_emb.shape)
@@ -128,7 +129,7 @@ def complete_embedding_matrix(
                         seg_idx = 0
                         for pos_idx in range(-init_cur_segment_len, -ori_seq_len + sliding_window, -sliding_window):
                             seg_idx += 1
-                            last_start = min(pos_idx - sliding_window, -ori_seq_len)
+                            last_start = max(pos_idx - sliding_window, -ori_seq_len)
                             seg_seq = seq[last_start: pos_idx + sliding_window]
                             seg_emb, seg_processed_seq_len = predict_embedding_func(
                                 llm_dirpath,
@@ -148,7 +149,7 @@ def complete_embedding_matrix(
                                 append_emb = np.concatenate((seg_emb[:sliding_window], append_emb), axis=0)
                         if last_start > -ori_seq_len:
                             seg_idx += 1
-                            remain = last_start - ori_seq_len
+                            remain = last_start + ori_seq_len
                             seg_seq = seq[-ori_seq_len:-ori_seq_len + 2 * sliding_window]
                             seg_emb, seg_processed_seq_len = predict_embedding_func(
                                 llm_dirpath,
@@ -200,11 +201,13 @@ def complete_embedding_matrix(
                         if append_emb is None:
                             append_emb = seg_emb
                         else:
+                            '''
                             if trunc_type == "right":
                                 append_emb = np.concatenate((append_emb, seg_emb), axis=0)
                             else:
                                 append_emb = np.concatenate((seg_emb, append_emb), axis=0)
-
+                            '''
+                            append_emb = np.concatenate((append_emb, seg_emb), axis=0)
                     if trunc_type == "right":
                         # 处理最后一个
                         last_seg_seq = seq[-cur_segment_len:]
