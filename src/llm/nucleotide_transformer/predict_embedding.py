@@ -25,9 +25,9 @@ try:
 except ImportError:
     from src.file_operator import fasta_reader, csv_reader, tsv_reader
     from src.utils import clean_seq_luca, calc_emb_filename_by_seq_id
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModelForMaskedLM
 
-model_id = 'InstaDeepAI/nucleotide-transformer-2.5b-multi-species'
+model_id = 'InstaDeepAI/nucleotide-transformer-v2-50m-multi-species'
 
 nucl_transformer_global_model, nucl_transformer_global_alphabet, nucl_transformer_global_version = None, None, None
 
@@ -56,6 +56,7 @@ def predict_embedding(
     :param fp16:
     :return: embedding, processed_seq_len
     '''
+    
     global nucl_transformer_global_model, nucl_transformer_global_alphabet, nucl_transformer_global_version
     assert "bos" in embedding_type or "representations" in embedding_type \
            or "matrix" in embedding_type or "vector" in embedding_type or "contacts" in embedding_type
@@ -72,7 +73,8 @@ def predict_embedding(
     if nucl_transformer_global_model is None or nucl_transformer_global_alphabet is None or nucl_transformer_global_version is None or nucl_transformer_global_version != version:
         if version == "nucl_transformer":
             nucl_transformer_global_alphabet = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-            nucl_transformer_global_model = AutoModel.from_pretrained(model_id, trust_remote_code=True)
+            nucl_transformer_global_model = AutoModelForMaskedLM.from_pretrained(model_id, trust_remote_code=True)
+            print('enter predict_embedding')
         else:
             raise Exception("not support this version=%s" % version)
         nucl_transformer_global_version = version
