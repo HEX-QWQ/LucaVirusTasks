@@ -25,9 +25,11 @@ try:
 except ImportError:
     from src.file_operator import fasta_reader, csv_reader, tsv_reader
     from src.utils import clean_seq_luca, calc_emb_filename_by_seq_id
-from transformers import AutoTokenizer, AutoModelForMaskedLM
 
-model_id = 'arcinstitute/evo2_1b_base'
+from evo2 import Evo2
+
+model_id = 'evo2_1b_base'
+layer_name = "blocks.10.mlp.l3"
 
 evo_global_model, evo_global_alphabet, evo_global_version = None, None, None
 
@@ -72,9 +74,7 @@ def predict_embedding(
             processed_seq = processed_seq[:truncation_seq_length]
     if evo_global_model is None or evo_global_alphabet is None or evo_global_version is None or evo_global_version != version:
         if version == "evo":
-            evo_global_alphabet = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-            evo_global_model = AutoModelForMaskedLM.from_pretrained(model_id, trust_remote_code=True)
-            print('enter predict_embedding')
+            evo_global_model = Evo2(model_id)
         else:
             raise Exception("not support this version=%s" % version)
         evo_global_version = version
@@ -96,22 +96,25 @@ def predict_embedding(
             evo_global_model = evo_global_model.to(device)
     evo_global_model.eval()
 
-    inputs = evo_global_alphabet(processed_seq, return_tensors='pt')["input_ids"]
+    inputs = torch.tensor(
+        evo_global_model.tokenizer.tokenize(processed_seq),  # 这里的 tokenizer 来自 model.tokenizer
+        dtype=torch.int
+    ).unsqueeze(0)
     embeddings = {}
     with torch.no_grad():
         # if torch.cuda.is_available():
         inputs = inputs.to(device=device, non_blocking=True)
         try:
-            out = evo_global_model(inputs)
+            _,out = evo_global_model(inputs,return_embeddings=True,layer_names=[layer_name])
             truncate_len = min(truncation_seq_length, inputs.shape[1] - 2)
             if "representations" in embedding_type or "matrix" in embedding_type:
                 if matrix_add_special_token:
-                    embedding = out[0].to(device="cpu")[0, 0: truncate_len + 2].clone().numpy()
+                    embedding = out.to(device="cpu")[0, 0: truncate_len + 2].clone().numpy()
                 else:
-                    embedding = out[0].to(device="cpu")[0, 1: truncate_len + 1].clone().numpy()
+                    embedding = out.to(device="cpu")[0, 1: truncate_len + 1].clone().numpy()
                 embeddings["representations"] = embedding
             if "bos" in embedding_type or "vector" in embedding_type:
-                embedding = out[0].to(device="cpu")[0, 0].clone().numpy()
+                embedding = out.to(device="cpu")[0, 0].clone().numpy()
                 embeddings["bos_representations"] = embedding
             if "contacts" in embedding_type:
                 # to do
