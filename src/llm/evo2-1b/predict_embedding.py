@@ -88,12 +88,7 @@ def predict_embedding(
         device = torch.device("cpu")
         print("llm use cpu")
     '''
-    if device is None:
-        device = next(evo_global_model.parameters()).device
-    else:
-        model_device = next(evo_global_model.parameters()).device
-        if device != model_device:
-            evo_global_model = evo_global_model.to(device)
+    evo_global_model = evo_global_model.to(device)
     evo_global_model.eval()
 
     inputs = torch.tensor(
