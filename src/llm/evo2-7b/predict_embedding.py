@@ -28,8 +28,8 @@ except ImportError:
 
 from evo2 import Evo2
 
-model_id = 'evo2_1b_base'
-layer_name = "blocks.10.mlp.l3"
+model_id = 'evo2_7b'
+layer_name = "blocks.28.mlp.l3"
 
 evo_global_model, evo_global_alphabet, evo_global_version = None, None, None
 
@@ -88,8 +88,8 @@ def predict_embedding(
         device = torch.device("cpu")
         print("llm use cpu")
     '''
-    evo_global_model = evo_global_model.to(device)
-    evo_global_model.eval()
+    # evo_global_model = evo_global_model.to(device)
+    # evo_global_model.eval()
 
     inputs = torch.tensor(
         evo_global_model.tokenizer.tokenize(processed_seq),  # 这里的 tokenizer 来自 model.tokenizer
@@ -104,9 +104,9 @@ def predict_embedding(
             truncate_len = min(truncation_seq_length, inputs.shape[1] - 2)
             if "representations" in embedding_type or "matrix" in embedding_type:
                 if matrix_add_special_token:
-                    embedding = out.to(device="cpu")[0, 0: truncate_len + 2].clone().numpy()
+                    embedding = out[layer_name][0, 0: truncate_len + 2].cpu().to(torch.float16).clone().numpy()
                 else:
-                    embedding = out.to(device="cpu")[0, 1: truncate_len + 1].clone().numpy()
+                    embedding = out[layer_name][0, 1: truncate_len + 1].cpu().to(torch.float16).clone().numpy()
                 embeddings["representations"] = embedding
             if "bos" in embedding_type or "vector" in embedding_type:
                 embedding = out.to(device="cpu")[0, 0].clone().numpy()
