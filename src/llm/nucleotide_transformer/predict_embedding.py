@@ -102,13 +102,16 @@ def predict_embedding(
         # if torch.cuda.is_available():
         inputs = inputs.to(device=device, non_blocking=True)
         try:
-            out = nucl_transformer_global_model(inputs)
+            out = nucl_transformer_global_model(inputs, output_hidden_states=True)
             truncate_len = min(truncation_seq_length, inputs.shape[1] - 2)
             if "representations" in embedding_type or "matrix" in embedding_type:
                 if matrix_add_special_token:
-                    embedding = out[0].to(device="cpu")[0, 0: truncate_len + 2].clone().numpy()
+                    embedding = out.hidden_states[-1].to(device="cpu")[0, 0: truncate_len + 2].clone().numpy()
                 else:
-                    embedding = out[0].to(device="cpu")[0, 1: truncate_len + 1].clone().numpy()
+                    embedding = out.hidden_states[-1].to(device="cpu")[0, 1: truncate_len + 1].clone().numpy()
+                
+                # print(embedding)
+                # print(embedding.shape)
                 embeddings["representations"] = embedding
             if "bos" in embedding_type or "vector" in embedding_type:
                 embedding = out[0].to(device="cpu")[0, 0].clone().numpy()
