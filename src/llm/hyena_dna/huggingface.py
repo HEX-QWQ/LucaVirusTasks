@@ -96,9 +96,10 @@ class HyenaDNAPreTrainedModel(PreTrainedModel):
             if config is None:
                 config = json.load(open(os.path.join(pretrained_model_name_or_path, 'config.json')))
         else:
+            
             hf_url = f'https://huggingface.co/LongSafari/{model_name}'
 
-            subprocess.run(f'rm -rf {pretrained_model_name_or_path}', shell=True)
+            # subprocess.run(f'rm -rf {pretrained_model_name_or_path}', shell=True)
             command = f'mkdir -p {path} && cd {path} && git lfs install && git clone {hf_url}'
             subprocess.run(command, shell=True)
 
@@ -108,7 +109,8 @@ class HyenaDNAPreTrainedModel(PreTrainedModel):
         scratch_model = HyenaDNAModel(**config, use_head=use_head, n_classes=n_classes)  # the new model format
         loaded_ckpt = torch.load(
             os.path.join(pretrained_model_name_or_path, 'weights.ckpt'),
-            map_location=torch.device(device)
+            map_location=torch.device(device),
+            weights_only=False
         )
 
         # need to load weights slightly different if using gradient checkpointing
@@ -248,7 +250,7 @@ def inference_single():
     print(embeddings.shape)  # embeddings here!
 
 # # uncomment to run! (to get embeddings)
-inference_single()
+# inference_single()
 
 
 # to run this, just call:
