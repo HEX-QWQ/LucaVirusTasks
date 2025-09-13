@@ -28,8 +28,9 @@ except ImportError:
 
 from huggingface import HyenaDNAPreTrainedModel
 from standalone_hyenadna import CharacterTokenizer
+from transformers import AutoModel
 
-model_id = 'hyenadna-tiny-1k-seqlen'
+model_id = 'LongSafari/hyenadna-large-1m-seqlen'
 model_max_length = 1e6
 
 evo_global_model, evo_global_alphabet, evo_global_version = None, None, None
@@ -75,10 +76,11 @@ def predict_embedding(
             processed_seq = processed_seq[:truncation_seq_length]
     if evo_global_model is None or evo_global_alphabet is None or evo_global_version is None or evo_global_version != version:
         if version == "evo":
-            evo_global_model = HyenaDNAPreTrainedModel.from_pretrained(
-                './checkpoints',
-                model_id,
-            )
+            # evo_global_model = HyenaDNAPreTrainedModel.from_pretrained(
+            #     './checkpoints',
+            #     model_id,
+            # )
+            evo_global_model = AutoModel.from_pretrained(model_id, torch_dtype="auto")
             tokenizer = CharacterTokenizer(
                 characters=['A', 'C', 'G', 'T', 'N'],  # add DNA characters
                 model_max_length = model_max_length,
