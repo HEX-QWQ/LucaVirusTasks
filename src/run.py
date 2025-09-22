@@ -770,6 +770,7 @@ def get_model(args):
     model_config.no_token_embeddings = args.no_token_embeddings
     model_config.no_token_type_embeddings = args.no_token_type_embeddings
     model_config.no_position_embeddings = args.no_position_embeddings
+    # 这几行代码的作用有些看不懂
     if args.seq_fc_size and args.seq_fc_size != "null":
         model_config.seq_fc_size = [int(v) for v in args.seq_fc_size.split(",")]
     if args.matrix_fc_size and args.matrix_fc_size != "null":

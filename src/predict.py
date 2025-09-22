@@ -1324,6 +1324,8 @@ if __name__ == "__main__":
                 print("Error! input a fasta file, please set arg: --seq_type, value: gene or prot")
                 sys.exit(-1)
 
+        # 这里有缺失，当input_mode=single时，输入文件类型不是fasta时怎么办？
+
     # download LLM(LucaOne)
     if not hasattr(run_args, "llm_step"):
         run_args.llm_step = "3800000"
@@ -1355,6 +1357,7 @@ if __name__ == "__main__":
                     exists_res.append(row)
                 print("exists records: %d" % len(exists_res))
             else:
+                #input_mode == "single"时也会进入到这个分支吧？输入文件格式是fasta怎么办？
                 for row in csv_reader(run_args.save_path, header=True, header_filter=True):
                     if len(row) < 4:
                         continue
