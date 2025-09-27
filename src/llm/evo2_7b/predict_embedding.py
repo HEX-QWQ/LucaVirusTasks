@@ -251,6 +251,7 @@ def main(model_args):
                         ))
                         truncation_seq_length = int(truncation_seq_length * 0.95)
                         emb, processed_seq_len = predict_embedding(
+                            model,
                             [seq_id, seq_type, seq],
                             model_args.trunc_type,
                             embedding_type,
@@ -277,6 +278,7 @@ def main(model_args):
     elif model_args.seq:
         print("input seq length: %d" % len(model_args.seq))
         emb, processed_seq_len = predict_embedding(
+            model,
             ["input", model_args.seq],
             model_args.trunc_type,
             model_args.embedding_type,
