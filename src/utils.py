@@ -636,6 +636,22 @@ def sample_size(data_dirpath):
             total += 1
     return total
 
+def sampele_matrix_size(matrix_dirpath):
+    if os.path.isdir(matrix_dirpath):
+        new_filepaths = []
+        for filename in os.listdir(matrix_dirpath):
+            if not filename.startswith("."):
+                new_filepaths.append(os.path.join(matrix_dirpath, filename))
+        filepaths = new_filepaths
+    else:
+        filepaths = [matrix_dirpath]
+    total = 0
+    for filepath in filepaths:
+        print("sample_size filepath: %s" % filepath)
+        if filepath.endswith(".pt"):
+            total += 1
+    return total
+
 
 def writer_info_tb(tb_writer, logs, global_step, prefix=None):
     '''

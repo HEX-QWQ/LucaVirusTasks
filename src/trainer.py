@@ -31,7 +31,7 @@ import torch.distributed as dist
 try:
     from evaluator import evaluate
     from tester import test
-    from utils import sample_size, to_device, get_lr, writer_info_tb, print_batch, lcm
+    from utils import sample_size, to_device, get_lr, writer_info_tb, print_batch, lcm, sampele_matrix_size
 except ImportError:
     from src.evaluator import evaluate
     from src.tester import test
@@ -58,6 +58,8 @@ def train(args, train_dataloader, model_config, model, seq_tokenizer, parse_row_
         if log_fp is None:
             log_fp = open(os.path.join(args.log_dir, "logs.txt"), "w")
     train_sample_num = sample_size(args.train_data_dir)
+    if os.path.exists(args.matrix_dirpath):
+        train_sample_num += sampele_matrix_size(args.matrix_dirpath)
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
     train_batch_total_num = (train_sample_num + args.train_batch_size - 1) // args.train_batch_size
     if args.local_rank in [-1, 0]:
