@@ -621,11 +621,11 @@ def clean_seq_luca(seq_id, seq):
 
 def sample_size(data_dirpath):
     if os.path.isdir(data_dirpath):
-        new_filepaths = []
-        for filename in os.listdir(data_dirpath):
-            if not filename.startswith("."):
-                new_filepaths.append(os.path.join(data_dirpath, filename))
-        filepaths = new_filepaths
+        filepaths = [
+            os.path.join(data_dirpath, f)
+            for f in os.listdir(data_dirpath)
+            if os.path.isfile(os.path.join(data_dirpath, f)) and not f.startswith(".")
+        ]
     else:
         filepaths = [data_dirpath]
     total = 0
