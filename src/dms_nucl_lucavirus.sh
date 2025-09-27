@@ -39,12 +39,12 @@ SEQ_POOLING_TYPE="value_attention"
 VOCAB_NAME="gene_prot"
 
 # for embedding channel
-embedding_input_size=2560
+embedding_input_size=4096
 matrix_max_length=100000
 # none, avg, max, value_attention
 MATRIX_POOLING_TYPE="value_attention"
 # for llm
-llm_type="lucaone_virus"
+llm_type="lucavirus"
 llm_task_level="token_level,span_level,seq_level"
 llm_version="v1.0"
 llm_time_str=20240815023346
@@ -59,13 +59,13 @@ max_steps=-1
 batch_size=16
 learning_rate=1e-4
 
-buffer_size=1024
+buffer_size=8192
 pos_weight=1.0
 
 time_str=$(date "+%Y%m%d%H%M%S")
-cd ../../
+# cd ../../
 python run.py \
-  --train_data_dir ../dataset/$DATASET_NAME/$DATASET_TYPE/$TASK_TYPE/train/ \
+  --train_data_dir /mnt/majiahao/LucaVirusTasks/src/data/$DATASET_NAME/$DATASET_TYPE/$TASK_TYPE/train/ \
   --dev_data_dir ../dataset/$DATASET_NAME/$DATASET_TYPE/$TASK_TYPE/dev/ \
   --test_data_dir ../dataset/$DATASET_NAME/$DATASET_TYPE/$TASK_TYPE/test/ \
   --dataset_name $DATASET_NAME \
@@ -125,7 +125,7 @@ python run.py \
   --dropout_prob $dropout_prob \
   --classifier_size $classifier_size \
   --vector_dirpath ../vectors/$DATASET_NAME/$DATASET_TYPE/$TASK_TYPE/$MODEL_TYPE/$llm_version/$llm_type/$llm_time_str/$llm_step   \
-  --matrix_dirpath ../matrices/$DATASET_NAME/$DATASET_TYPE/$TASK_TYPE/$MODEL_TYPE/$llm_version/$llm_type/$llm_time_str/$llm_step  \
+  --matrix_dirpath /mnt/majiahao/LucaVirusTasks/src/data/DMS_Bind_Reps_Strain_Nucl/gene/regression/train/evo2_embeddings \
   --seq_fc_size null \
   --matrix_fc_size $fc_size \
   --vector_fc_size null \
