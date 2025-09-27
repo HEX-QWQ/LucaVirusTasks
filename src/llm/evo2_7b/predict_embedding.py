@@ -35,6 +35,7 @@ evo_global_model, evo_global_alphabet, evo_global_version = None, None, None
 
 
 def predict_embedding(
+        model,
         sample,
         trunc_type,
         embedding_type,
@@ -74,7 +75,7 @@ def predict_embedding(
             processed_seq = processed_seq[:truncation_seq_length]
     if evo_global_model is None or evo_global_alphabet is None or evo_global_version is None or evo_global_version != version:
         if version == "evo":
-            evo_global_model = Evo2(model_id)
+            evo_global_model = model
         else:
             raise Exception("not support this version=%s" % version)
         evo_global_version = version
@@ -206,6 +207,8 @@ def main(model_args):
         elif model_args.input_file.endswith(".tsv"):
             file_reader = tsv_reader
 
+        model = Evo2(model_id)
+
         for row in file_reader(model_args.input_file):
             if model_args.id_idx is None or model_args.seq_idx is None:
                 if len(row) > 2:
@@ -230,6 +233,7 @@ def main(model_args):
                     if model_args.embedding_complete:
                         truncation_seq_length = ori_seq_len
                     emb, processed_seq_len = predict_embedding(
+                        model,
                         [seq_id, seq_type, seq],
                         model_args.trunc_type,
                         embedding_type,

@@ -1303,12 +1303,13 @@ def main():
         else:
             print("Has Pair/Triple: False")
             train_dataset = train_dataset.map(
+                # 对每行数据执行一个数据处理函数
                 lambda x: parse_row_func(
                     x["seq_id"],
                     x["seq_type"] if "seq_type" in x else "prot",
                     x["seq"],
-                    x["vector_filename"] if "vector_filename" in x else None,
-                    x["matrix_filename"] if "matrix_filename" in x else None,
+                    x["vector_filename"] if "vector_filename" in x else f'{x["seq_id"]}_vector.pkl',
+                    x["matrix_filename"] if "matrix_filename" in x else f'{x["seq_id"]}_matrix.pkl',
                     x["label"] if "label" in x else None,
                 ),
                 batched=False
